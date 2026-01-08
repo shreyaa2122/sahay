@@ -1,0 +1,15 @@
+gitignore
+# Backend Secrets
+**/config.env
+**/node_modules/
+
+# Android/Frontend Secrets
+**/.gradle/
+**/build/
+**/local.properties
+**/.idea/
+**/app/src/main/res/values/secrets.xml
+
+# Misc
+.DS_Store
+Thumbs.db
