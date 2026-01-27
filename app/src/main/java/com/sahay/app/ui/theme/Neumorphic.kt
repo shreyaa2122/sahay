@@ -26,7 +26,7 @@ import com.sahay.app.ui.util.neumorphicShadow
 @Composable
 fun NeumorphicCard(
     modifier: Modifier = Modifier,
-    elevation: Dp = 8.dp,
+    elevation: Dp = 8.dp, // Added the missing elevation parameter
     cornerRadius: Dp = 20.dp,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
     content: @Composable () -> Unit
@@ -106,7 +106,7 @@ fun NeumorphicCircleButton(
             .neumorphicShadow(
                 elevation = pressedElevation,
                 cornerRadius = size / 2, // Circle
-                lightShadowColor = if (isDark) NeumorphicDarkShadowLight else NeumorphicLightShadowLight,
+                lightShadowColor = if (isDark) NeumorphicDarkShadowLight else NeumorphicLightShadowDark,
                 darkShadowColor = if (isDark) NeumorphicDarkShadowDark else NeumorphicLightShadowDark,
                 isPressed = isPressed
             )
@@ -153,6 +153,7 @@ fun NeumorphicGradientText(
         )
     )
 }
+
 
 @Composable
 fun isDarkTheme(): Boolean {

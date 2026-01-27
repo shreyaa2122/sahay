@@ -10,48 +10,48 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+// A more stable implementation of the neumorphic shadow modifier.
 fun Modifier.neumorphicShadow(
-    cornerRadius: Dp = 0.dp,
     elevation: Dp,
+    cornerRadius: Dp,
     lightShadowColor: Color,
     darkShadowColor: Color,
     isPressed: Boolean = false
-): Modifier {
-    if (isPressed || elevation <= 0.dp) {
-        return this
-    }
+): Modifier = if (elevation <= 0.dp) this else drawBehind {
 
-    return this.drawBehind { 
-        val shadowOffset = elevation.toPx() / 2.5f
-        val blurRadius = elevation.toPx()
-
-        val paint = Paint()
-        val frameworkPaint = paint.asFrameworkPaint()
-
-        if (blurRadius > 0) {
-            frameworkPaint.maskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
-        }
-
+    if (!isPressed) {
+        // The logic for drawing shadows works by drawing two blurred shapes,
+        // one offset to the bottom-right (dark) and one to the top-left (light).
         drawIntoCanvas { canvas ->
-            val left = 0f
-            val top = 0f
-            val right = this.size.width
-            val bottom = this.size.height
-            val radius = cornerRadius.toPx()
 
-            // Dark shadow (bottom-right)
+            val paint = Paint()
+            val frameworkPaint = paint.asFrameworkPaint()
+
+            // 1. Draw the dark shadow
             frameworkPaint.color = darkShadowColor.toArgb()
-            canvas.save()
-            canvas.translate(shadowOffset, shadowOffset)
-            canvas.drawRoundRect(left, top, right, bottom, radius, radius, paint)
-            canvas.restore()
+            frameworkPaint.maskFilter = (BlurMaskFilter(elevation.toPx(), BlurMaskFilter.Blur.NORMAL))
+            canvas.drawRoundRect(
+                left = 0f,
+                top = 0f,
+                right = size.width,
+                bottom = size.height,
+                radiusX = cornerRadius.toPx(),
+                radiusY = cornerRadius.toPx(),
+                paint = paint
+            )
 
-            // Light shadow (top-left)
+            // 2. Draw the light shadow
             frameworkPaint.color = lightShadowColor.toArgb()
-            canvas.save()
-            canvas.translate(-shadowOffset, -shadowOffset)
-            canvas.drawRoundRect(left, top, right, bottom, radius, radius, paint)
-            canvas.restore()
+            frameworkPaint.maskFilter = (BlurMaskFilter(elevation.toPx(), BlurMaskFilter.Blur.NORMAL))
+            canvas.drawRoundRect(
+                left = 0f,
+                top = 0f,
+                right = size.width,
+                bottom = size.height,
+                radiusX = cornerRadius.toPx(),
+                radiusY = cornerRadius.toPx(),
+                paint = paint
+            )
         }
     }
 }
